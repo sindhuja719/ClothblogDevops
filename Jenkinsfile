@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-        stage('Deploy Application on EC2') {
+               stage('Deploy Application on EC2') {
             steps {
                 script {
                     def EC2_IP = bat(
@@ -56,22 +56,19 @@ pipeline {
 
                     echo "EC2 Public IP: ${EC2_IP}"
 
-                    // ✅ Correct SSH method
                     sshagent(credentials: ['ec2-ssh-key']) {
-                        bat """
-                        ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} ^
-                        "sudo docker stop cloth || true && ^
-                        sudo docker rm cloth || true && ^
-                        sudo docker rmi %ECR_REPO%:%IMAGE_TAG% || true && ^
-                        aws ecr get-login-password --region %AWS_REGION% | sudo docker login --username AWS --password-stdin %ECR_REPO% && ^
-                        sudo docker pull %ECR_REPO%:%IMAGE_TAG% && ^
-                        sudo docker run -d --name cloth -p 80:80 %ECR_REPO%:%IMAGE_TAG% && ^
-                        echo Deployment Successful!"
-                        """
+                        bat "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} \"sudo docker stop cloth || true\""
+                        bat "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} \"sudo docker rm cloth || true\""
+                        bat "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} \"sudo docker rmi %ECR_REPO%:%IMAGE_TAG% || true\""
+                        bat "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} \"aws ecr get-login-password --region %AWS_REGION% | sudo docker login --username AWS --password-stdin %ECR_REPO%\""
+                        bat "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} \"sudo docker pull %ECR_REPO%:%IMAGE_TAG%\""
+                        bat "ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} \"sudo docker run -d --name cloth -p 80:80 %ECR_REPO%:%IMAGE_TAG%\""
+                        echo "✅ Deployment Successful on EC2!"
                     }
                 }
             }
         }
+
 
         stage('Destroy Infrastructure (Manual Trigger)') {
             when {
