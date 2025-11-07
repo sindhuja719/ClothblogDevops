@@ -46,7 +46,7 @@ pipeline {
             }
         }
 
-               stage('Deploy Application on EC2') {
+        stage('Deploy Application on EC2') {
             steps {
                 script {
                     def EC2_IP = bat(
