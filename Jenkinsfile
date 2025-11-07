@@ -52,10 +52,30 @@ pipeline {
             }
         }
     }
+    
+       stage('Destroy Infrastructure (Manual Trigger)') {
+            when {
+                expression { return params.DESTROY_INFRA == true }
+            }
+            steps {
+                dir('terraform') {
+                    withAWS(region: "${AWS_REGION}", credentials: 'aws-creds') {
+                        bat '''
+                        terraform destroy -auto-approve
+                        '''
+                    }
+                }
+            }
+        }
+
+    parameters {
+        booleanParam(name: 'DESTROY_INFRA', defaultValue: false, description: 'Check this to destroy infrastructure')
+    }
 
     post {
         success {
-            echo "✅ Cloth Blog deployed successfully to AWS EC2!"
+           echo '✅ Docker image pushed, EC2 deployed, and website is running!'
+            echo '🎉 Open the site in your browser using the EC2 Public IP or DNS.'
         }
         failure {
             echo "❌ Deployment failed. Check logs."
