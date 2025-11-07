@@ -1,0 +1,16 @@
+# Ignore Terraform cache and state files
+terraform/.terraform/
+*.tfstate
+*.tfstate.*
+*.log
+crash.log
+
+# Ignore local configs
+*.bak
+*.backup
+*.tmp
+
+# Ignore IDE and OS files
+.vscode/
+.DS_Store
+Thumbs.db
