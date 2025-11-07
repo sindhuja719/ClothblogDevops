@@ -1,16 +1,19 @@
-# Ignore Terraform cache and state files
+# Terraform
 terraform/.terraform/
 *.tfstate
 *.tfstate.*
 *.log
 crash.log
 
-# Ignore local configs
-*.bak
-*.backup
-*.tmp
+# AWS / Credentials
+*.pem
+*.key
+*.zip
 
-# Ignore IDE and OS files
+# IDE / System
 .vscode/
 .DS_Store
 Thumbs.db
+
+# OS executables
+*.exe
