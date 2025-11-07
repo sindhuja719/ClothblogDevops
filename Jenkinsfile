@@ -49,7 +49,6 @@ pipeline {
         stage('Deploy Application on EC2') {
             steps {
                 script {
-                    // Get EC2 Public IP from Terraform
                     def EC2_IP = bat(
                         script: 'cd terraform && terraform output -raw public_ip',
                         returnStdout: true
@@ -57,7 +56,7 @@ pipeline {
 
                     echo "EC2 Public IP: ${EC2_IP}"
 
-                    // SSH using Jenkins stored SSH key
+                    // ✅ Correct SSH method
                     sshagent(credentials: ['ec2-ssh-key']) {
                         bat """
                         ssh -o StrictHostKeyChecking=no ec2-user@${EC2_IP} ^
@@ -97,7 +96,7 @@ pipeline {
             echo "✅ Application deployed successfully on EC2!"
         }
         failure {
-            echo " Deployment failed. Check logs."
+            echo "❌ Deployment failed. Check logs."
         }
     }
 }
