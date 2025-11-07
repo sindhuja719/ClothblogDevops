@@ -97,7 +97,7 @@ pipeline {
             echo "✅ Application deployed successfully on EC2!"
         }
         failure {
-            echo "❌ Deployment failed. Check logs."
+            echo " Deployment failed. Check logs."
         }
     }
 }
